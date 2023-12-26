@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as cron from 'node-cron';
 import * as dotenv from 'dotenv';
+import { UpdateUserDto } from './update-user.dto';
 
 dotenv.config();
 
@@ -19,6 +20,41 @@ export class TelegramService implements OnModuleInit {
   onModuleInit() {
     this.initialize();
     this.scheduleWeatherUpdates();
+  }
+
+  async getAllUsers() {
+    return this.userModel.find().exec();
+  }
+
+  async updateUserByUserId(
+    userId: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<any> {
+    const updatedUser = await this.userModel.findOneAndUpdate(
+      { userId },
+      updateUserDto,
+      { new: true },
+    );
+
+    if (updatedUser) {
+      console.log(`User with userId ${userId} found and updated:`, updatedUser);
+    } else {
+      console.log(`User with userId ${userId} not found`);
+    }
+
+    return updatedUser;
+  }
+
+  async deleteUserByUserId(userId: string): Promise<any> {
+    const deletedUser = await this.userModel.findOneAndDelete({ userId });
+
+    if (deletedUser) {
+      console.log(`User with userId ${userId} deleted:`, deletedUser);
+    } else {
+      console.log(`User with userId ${userId} not found`);
+    }
+
+    return deletedUser;
   }
 
   private initialize() {

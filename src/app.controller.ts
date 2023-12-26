@@ -19,7 +19,6 @@ export class AppController {
       idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
-    console.log(ticket.getPayload(), 'ticket');
     const { email, name, picture } = ticket.getPayload();
     const data = await this.appService.login({ email, name, image: picture });
     return {
