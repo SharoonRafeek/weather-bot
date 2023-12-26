@@ -6,13 +6,17 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersSchema } from './telegram/users.schema';
 import { UsersModel } from './telegram/users.model';
 import * as dotenv from 'dotenv';
+import { Admin, AdminSchema } from './admin.schema';
 
 dotenv.config();
 
 @Module({
   imports: [
     MongooseModule.forRoot(process.env.DATABASE_URL),
-    MongooseModule.forFeature([{ name: 'Users', schema: UsersSchema }]),
+    MongooseModule.forFeature([
+      { name: 'Users', schema: UsersSchema },
+      { name: Admin.name, schema: AdminSchema },
+    ]),
   ],
   controllers: [AppController],
   providers: [AppService, TelegramService, UsersModel],
