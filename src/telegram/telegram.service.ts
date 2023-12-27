@@ -147,14 +147,28 @@ export class TelegramService implements OnModuleInit {
         const users = await this.userModel.find();
         for (const user of users) {
           if (user.location) {
-            const weatherInfo = await this.getWeatherInfoByCityName(
-              user.location,
-            );
-            if (weatherInfo) {
-              await this.bot.telegram.sendMessage(
-                user.userId,
-                `Weather Update for ${user.location}:\nTemperature: ${weatherInfo.temperature}°C\nDescription: ${weatherInfo.description}`,
+            try {
+              const weatherInfo = await this.getWeatherInfoByCityName(
+                user.location,
               );
+              if (weatherInfo) {
+                await this.bot.telegram.sendMessage(
+                  user.userId,
+                  `Weather Update for ${user.location}:\nTemperature: ${weatherInfo.temperature}°C\nDescription: ${weatherInfo.description}`,
+                );
+              }
+            } catch (error) {
+              console.error(
+                `Error sending weather update to user ${user.userId}:`,
+                error.message,
+              );
+
+              // Handle specific errors, e.g., 403 Forbidden
+              if (error.code === 403) {
+                // You can implement specific handling for this error, such as logging, updating user status, etc.
+                // For now, continue to the next user.
+                continue;
+              }
             }
           }
         }
