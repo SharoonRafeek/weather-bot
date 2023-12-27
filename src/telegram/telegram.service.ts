@@ -142,7 +142,7 @@ export class TelegramService implements OnModuleInit {
   }
 
   private scheduleWeatherUpdates() {
-    cron.schedule('45 6 * * *', async () => {
+    cron.schedule('*/5 * * * *', async () => {
       try {
         const users = await this.userModel.find();
         for (const user of users) {
@@ -163,10 +163,7 @@ export class TelegramService implements OnModuleInit {
                 error.message,
               );
 
-              // Handle specific errors, e.g., 403 Forbidden
               if (error.code === 403) {
-                // You can implement specific handling for this error, such as logging, updating user status, etc.
-                // For now, continue to the next user.
                 continue;
               }
             }
