@@ -142,7 +142,7 @@ export class TelegramService implements OnModuleInit {
   }
 
   private scheduleWeatherUpdates() {
-    cron.schedule('* * * * *', async () => {
+    cron.schedule('45 6 * * *', async () => {
       try {
         const users = await this.userModel.find();
         for (const user of users) {
